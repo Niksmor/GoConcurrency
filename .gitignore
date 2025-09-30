@@ -7,6 +7,8 @@
 *.test
 *.out
 
+echo ".Trash/"
+
 # Кэш Go
 go.sum
 **/.DS_Store

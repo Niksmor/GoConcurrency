@@ -2,6 +2,7 @@ package exercises
 
 import (
 	"fmt"
+	"sync"
 )
 
 // 1. Параллельный счётчик
@@ -13,14 +14,28 @@ import (
 func main() {
 	counter := 0
 
-	// TODO: sync.Mutex для защиты counter
-	// TODO: sync.WaitGroup для ожидания завершения всех горутин
+	// Создаю мютекс
+	var mutex sync.Mutex
+
+	var wg sync.WaitGroup
 
 	for i := 0; i < 10; i++ {
-		// TODO: Запустить горутину, которая увеличит counter
+		// увеличиваю чсчетчик перед запуском горуты
+
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+
+			mutex.Lock()
+
+			counter++
+
+			mutex.Unlock()
+		}()
 	}
 
-	// TODO: Дождаться завершения всех горутин
+	wg.Wait()
 
 	fmt.Println("Result:", counter)
 }
