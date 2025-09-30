@@ -1,20 +1,34 @@
 package exercises
 
-// 5. Пайплайн обработки данных
+import (
+	"context"
+	"fmt"
+	"time"
+)
+
+// 6. Остановка горутины через context.WithTimeout
 // Задача:
-// Необходимо реализовать пайплайн из **трёх стадий** (три горутины):
-// 1. Первая стадия: отправляет в канал числа от 1 до 5.
-// 2. Вторая стадия: получает числа из первого канала и возводит их в квадрат.
-// 3. Третья стадия: выводит полученные числа.
-// Каждая стадия должна работать независимо, передавая данные между собой через каналы. Программа должна завершаться корректно, когда все данные обработаны.
+// Запустите горутину, которая каждую секунду выводит `"tick"`.
+// Используйте `context.WithTimeout`, чтобы горутина завершилась автоматически через 3 секунды.
+
+func worker(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println("рабочий остановился:", ctx.Err())
+			return
+		default:
+			fmt.Println("tick")
+			time.Sleep(1 * time.Second)
+		}
+	}
+}
 
 func main() {
-	// ch1 := make(chan int)
-	// ch2 := make(chan int)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 
-	// go producer(ch1)
-	// go square(ch1, ch2)
-	// go printer(ch2)
+	go worker(ctx)
 
-	// ожидание завершения (sync.WaitGroup)
+	time.Sleep(4 * time.Second)
 }
