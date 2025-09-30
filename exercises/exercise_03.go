@@ -1,6 +1,7 @@
 package exercises
 
 import (
+	"fmt"
 	"math/rand"
 )
 
@@ -11,7 +12,11 @@ import (
 // Главная функция должна собрать все результаты и вывести общую сумму.
 
 func sumPart(nums []int, resultCh chan int) {
-	// TODO: Посчитать сумму и отправить в канал
+	sum := 0
+	for _, num := range nums {
+		sum += num
+	}
+	resultCh <- sum
 }
 
 func main() {
@@ -21,9 +26,20 @@ func main() {
 		nums[i] = rand.Intn(100)
 	}
 
-	// TODO resultCh := make(chan int, parts)
+	resultCh := make(chan int, parts)
 
-	// TODO: Разделить nums на 10 частей и запустить 10 горутин sumPart
+	chunkSize := len(nums) / parts
 
-	// TODO: Собрать результаты из канала и вывести общую сумму
+	for i := 0; i < parts; i++ {
+		start := i * chunkSize
+		end := start + chunkSize
+		go sumPart(nums[start:end], resultCh)
+	}
+
+	totalSum := 0
+	for i := 0; i < parts; i++ {
+		totalSum += <-resultCh
+	}
+
+	fmt.Println("Total sum:", totalSum)
 }

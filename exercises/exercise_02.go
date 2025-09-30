@@ -23,7 +23,7 @@ func main() {
 
 			defer wg.Done()
 
-			// Атомарное увеливение счетчика
+			// Атомарное увеливение
 			atomic.AddInt64(&counter, 1)
 		}()
 	}
